@@ -1,0 +1,1851 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#11100e">
+  <title>Perfect Match♥</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11100e;
+      --panel: #191815;
+      --panel-soft: #201e19;
+      --gold: #d7b56d;
+      --gold-bright: #f0d99e;
+      --muted: #9c988e;
+      --line: rgba(215, 181, 109, .2);
+      --white: #f8f5ee;
+      --danger: #df7670;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; background: #090908; }
+    body { color: var(--white); }
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .device {
+      width: min(100%, 414px);
+      min-height: 100svh;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(172, 135, 62, .15), transparent 43%),
+        var(--bg);
+      box-shadow: 0 0 70px rgba(0, 0, 0, .72);
+    }
+
+    @media (min-width: 500px) {
+      body { padding: 22px 0; }
+      .device {
+        min-height: min(852px, calc(100svh - 44px));
+        height: min(852px, calc(100svh - 44px));
+        border: 1px solid rgba(215, 181, 109, .14);
+        border-radius: 34px;
+      }
+    }
+
+    .screen {
+      min-height: 100svh;
+      padding: max(24px, env(safe-area-inset-top)) 25px max(26px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      animation: appear .32s ease both;
+    }
+
+    @media (min-width: 500px) {
+      .screen { min-height: 100%; }
+    }
+
+    @keyframes appear {
+      from { opacity: .25; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .wordmark {
+      margin: 0;
+      color: var(--gold-bright);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 27px;
+      font-weight: 500;
+      letter-spacing: -.7px;
+    }
+
+    .wordmark span { color: var(--white); }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.1px;
+      text-transform: uppercase;
+    }
+
+    .landing {
+      justify-content: space-between;
+      padding-top: max(34px, env(safe-area-inset-top));
+      padding-bottom: max(34px, env(safe-area-inset-bottom));
+      background:
+        linear-gradient(180deg, rgba(17, 16, 14, .08) 0%, rgba(17, 16, 14, .12) 42%, #11100e 87%),
+        radial-gradient(ellipse at 53% 37%, rgba(181, 145, 76, .16), transparent 45%);
+    }
+
+    .brand-lockup { text-align: center; }
+    .brand-lockup .wordmark { font-size: 30px; }
+    .brand-lockup .eyebrow { display: block; margin-top: 10px; }
+
+    .hero {
+      text-align: center;
+      margin: auto 0;
+      padding: 60px 0 45px;
+    }
+
+    .seal {
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 30px;
+      border: 1px solid rgba(215, 181, 109, .54);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--gold-bright);
+      box-shadow: 0 0 35px rgba(215, 181, 109, .09), inset 0 0 24px rgba(215, 181, 109, .07);
+      font-family: Georgia, serif;
+      font-size: 36px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(32px, 9vw, 43px);
+      font-weight: 400;
+      letter-spacing: -1.25px;
+      line-height: 1.13;
+    }
+
+    .hero h2 em { color: var(--gold-bright); font-weight: 400; }
+    .hero-copy {
+      max-width: 315px;
+      margin: 19px auto 0;
+      color: #b7b2a7;
+      font-size: 13px;
+      line-height: 1.9;
+      word-break: keep-all;
+    }
+
+    .privacy-note {
+      margin: 0 auto 22px;
+      max-width: 330px;
+      padding: 14px 15px;
+      border: 1px solid rgba(215, 181, 109, .17);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .025);
+      color: #938e83;
+      font-size: 10px;
+      line-height: 1.75;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .privacy-note strong { color: var(--gold); font-weight: 600; }
+    .primary-button {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(105deg, #d8b66e, #f0d99e 55%, #c7a35b);
+      color: #17140d;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: .25px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(194, 157, 83, .18);
+      transition: transform .18s, filter .18s;
+    }
+
+    .primary-button:active, .round-action:active, .tab:active { transform: scale(.97); }
+    .primary-button:hover { filter: brightness(1.06); }
+    .subtle-footer { margin: 17px 0 0; color: #68655d; font-size: 10px; text-align: center; }
+
+    .profile-screen { gap: 0; }
+    .screen-heading { margin: 36px 0 26px; }
+    .screen-heading h2 {
+      margin: 9px 0 0;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: -.6px;
+    }
+    .screen-heading p { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .form-field { margin-bottom: 19px; }
+    .form-field label, .field-label {
+      display: block;
+      margin-bottom: 9px;
+      color: #d9d4c9;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .text-input {
+      width: 100%;
+      height: 51px;
+      padding: 0 14px;
+      outline: none;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 10px;
+      background: #191815;
+      color: var(--white);
+      font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .text-input:focus { border-color: rgba(215, 181, 109, .65); box-shadow: 0 0 0 3px rgba(215, 181, 109, .08); }
+    .text-input::placeholder { color: #625f57; }
+    .profile-photo-row { display: flex; align-items: center; gap: 16px; margin: 4px 0 24px; }
+    .user-avatar {
+      width: 78px; height: 78px; flex: 0 0 78px; overflow: hidden;
+      display: grid; place-items: center; border-radius: 50%;
+      border: 1px solid rgba(215, 181, 109, .4);
+      background: radial-gradient(circle at 35% 25%, #554533, #28241d 68%);
+      color: var(--gold-bright); font-size: 29px;
+    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .secondary-button, .avatar-choice {
+      border: 1px solid rgba(215, 181, 109, .28);
+      border-radius: 9px;
+      background: rgba(215, 181, 109, .06);
+      color: #ded6c5;
+      cursor: pointer;
+    }
+    .secondary-button { min-height: 36px; padding: 0 12px; font-size: 11px; }
+    .avatar-options { display: flex; gap: 5px; margin-top: 10px; }
+    .avatar-choice { width: 31px; height: 31px; padding: 0; border-radius: 50%; font-size: 16px; }
+    .avatar-choice[aria-pressed="true"] { border-color: var(--gold-bright); background: rgba(215, 181, 109, .19); }
+    .form-spacer { flex: 1; min-height: 22px; }
+    .local-only { margin: 12px 0 0; color: #777267; font-size: 10px; text-align: center; }
+
+    .loading-screen { align-items: center; justify-content: center; text-align: center; }
+    .spinner {
+      width: 72px; height: 72px; margin-bottom: 30px; border-radius: 50%;
+      border: 1px solid rgba(215, 181, 109, .19);
+      border-top-color: var(--gold-bright);
+      border-right-color: var(--gold);
+      animation: spin 1.1s linear infinite;
+      box-shadow: 0 0 32px rgba(215, 181, 109, .1);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-screen h2 { margin: 0 0 10px; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+    .loading-screen p { margin: 0; color: var(--muted); font-size: 13px; }
+    .loading-dots { margin-top: 25px; color: var(--gold); letter-spacing: 5px; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: .3; } }
+
+    .app-screen { padding: max(18px, env(safe-area-inset-top)) 20px max(8px, env(safe-area-inset-bottom)); }
+    .app-header { display: flex; align-items: center; justify-content: space-between; padding: 3px 2px 17px; }
+    .app-header .wordmark { font-size: 23px; }
+    .header-tag { color: var(--gold); font-size: 9px; letter-spacing: 1.5px; }
+    .notification {
+      position: absolute; z-index: 10; top: max(11px, env(safe-area-inset-top)); left: 13px; right: 13px;
+      display: flex; align-items: center; gap: 11px; padding: 13px 14px;
+      border: 1px solid rgba(240, 217, 158, .65); border-radius: 12px;
+      background: rgba(35, 31, 23, .97); box-shadow: 0 10px 34px rgba(0, 0, 0, .45);
+      animation: notice-in .35s ease both;
+    }
+    @keyframes notice-in { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    .notification-icon { color: var(--gold-bright); font-size: 21px; }
+    .notification-text { font-size: 12px; line-height: 1.5; }
+    .notification-text strong { color: var(--gold-bright); }
+    .notice-close { margin-left: auto; border: 0; background: transparent; color: #aaa396; font-size: 18px; cursor: pointer; }
+
+    .swipe-screen { padding-bottom: 0; }
+    .discovery-heading { display: flex; align-items: end; justify-content: space-between; margin: 2px 1px 14px; }
+    .discovery-heading h2 { margin: 0; font-family: Georgia, serif; font-size: 24px; font-weight: 400; }
+    .discovery-heading p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .count-label { color: #b3a885; font-size: 11px; }
+    .card-stage { position: relative; width: 100%; flex: 1; min-height: 390px; max-height: 565px; }
+    .profile-card {
+      position: absolute; inset: 0; overflow: hidden; border: 1px solid rgba(215, 181, 109, .28);
+      border-radius: 20px; background: #25221c; box-shadow: 0 15px 36px rgba(0, 0, 0, .36);
+      touch-action: pan-y; user-select: none; will-change: transform;
+    }
+    .profile-card::after {
+      content: ""; position: absolute; inset: 25% 0 0;
+      background: linear-gradient(180deg, transparent, rgba(9, 8, 7, .25) 22%, rgba(9, 8, 7, .96) 100%);
+      pointer-events: none;
+    }
+    .profile-card img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+    .card-placeholder {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: radial-gradient(circle at 50% 32%, #75634a, #29251e 62%, #171512);
+      color: rgba(240, 217, 158, .8); font-family: Georgia, serif; font-size: 115px;
+    }
+    .card-topline { position: absolute; z-index: 1; top: 14px; left: 14px; display: flex; gap: 6px; }
+    .vip-pill, .verified-pill { padding: 7px 9px; border-radius: 20px; font-size: 9px; letter-spacing: .8px; backdrop-filter: blur(12px); }
+    .vip-pill { background: rgba(16, 15, 13, .72); color: var(--gold-bright); }
+    .verified-pill { border: 1px solid rgba(240, 217, 158, .4); background: rgba(16, 15, 13, .62); color: #f0e8d4; }
+    .swipe-stamp {
+      position: absolute; z-index: 2; top: 38px; padding: 6px 13px; border: 3px solid; border-radius: 7px;
+      font-size: 24px; font-weight: 850; letter-spacing: 2px; opacity: 0; pointer-events: none;
+    }
+    .stamp-like { left: 21px; color: #7ad0aa; border-color: #7ad0aa; transform: rotate(-13deg); }
+    .stamp-pass { right: 21px; color: #e4887e; border-color: #e4887e; transform: rotate(13deg); }
+    .card-details { position: absolute; z-index: 1; left: 21px; right: 21px; bottom: 22px; }
+    .profile-name { margin: 0; font-family: Georgia, serif; font-size: 31px; font-weight: 400; letter-spacing: -.5px; }
+    .profile-name span { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 24px; }
+    .profile-job { margin: 6px 0 0; color: #ded8ca; font-size: 12px; }
+    .card-divider { height: 1px; margin: 16px 0 12px; background: rgba(240, 217, 158, .24); }
+    .greeting { margin: 0; color: #e5dfd2; font-size: 13px; line-height: 1.65; }
+    .card-actions { display: flex; align-items: center; justify-content: center; gap: 22px; padding: 16px 0 13px; }
+    .round-action {
+      display: grid; place-items: center; width: 57px; height: 57px; border-radius: 50%;
+      background: #1c1a16; cursor: pointer; transition: transform .18s, background .18s;
+    }
+    .round-action.pass { border: 1px solid rgba(223, 118, 112, .5); color: #e28b84; font-size: 26px; }
+    .round-action.like { width: 65px; height: 65px; border: 1px solid rgba(215, 181, 109, .65); background: linear-gradient(145deg, #d9b96f, #b88e43); color: #17140d; font-size: 26px; box-shadow: 0 6px 20px rgba(215, 181, 109, .2); }
+    .round-action:hover { transform: translateY(-2px); }
+    .action-hint { margin: -3px 0 11px; color: #777267; font-size: 10px; text-align: center; }
+    .tab-bar {
+      display: flex; justify-content: space-around; margin: 0 -20px;
+      padding: 10px 20px max(10px, env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(255, 255, 255, .07); background: rgba(17, 16, 14, .96);
+    }
+    .tab { min-width: 86px; display: grid; justify-items: center; gap: 3px; border: 0; background: transparent; color: #77746c; font-size: 9px; cursor: pointer; }
+    .tab-icon { font-size: 19px; line-height: 1; }
+    .tab[aria-current="page"] { color: var(--gold-bright); }
+
+    .empty-state { flex: 1; display: grid; place-items: center; text-align: center; }
+    .empty-state .seal { width: 76px; height: 76px; margin-bottom: 20px; font-size: 29px; }
+    .empty-state h2 { margin: 0; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+    .empty-state p { max-width: 270px; margin: 9px auto 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .message-screen { padding-bottom: 0; }
+    .message-heading { margin: 7px 0 22px; }
+    .message-heading h2 { margin: 0; font-family: Georgia, serif; font-size: 30px; font-weight: 400; }
+    .message-heading p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .match-list { flex: 1; }
+    .match-row {
+      width: 100%; display: flex; align-items: center; gap: 13px; padding: 14px 0;
+      border: 0; border-bottom: 1px solid rgba(255, 255, 255, .07); background: transparent; text-align: left; cursor: pointer;
+    }
+    .match-avatar { width: 56px; height: 56px; flex: 0 0 56px; overflow: hidden; display: grid; place-items: center; border: 1px solid rgba(215, 181, 109, .38); border-radius: 50%; background: #29251e; color: var(--gold-bright); font-size: 24px; }
+    .match-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .match-copy { flex: 1; min-width: 0; }
+    .match-copy strong { display: block; font-family: Georgia, serif; font-size: 17px; font-weight: 400; }
+    .match-copy span { display: block; overflow: hidden; margin-top: 5px; color: #999489; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .match-meta { align-self: flex-start; color: #837d70; font-size: 9px; }
+    .new-dot { display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: var(--gold); }
+
+    .chat-screen { padding-bottom: 0; }
+    .chat-header { display: flex; align-items: center; gap: 12px; padding: 4px 0 14px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+    .back-button { width: 34px; height: 36px; border: 0; background: transparent; color: var(--gold-bright); font-size: 25px; cursor: pointer; }
+    .chat-person { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .chat-person .match-avatar { width: 39px; height: 39px; flex-basis: 39px; font-size: 18px; }
+    .chat-person strong { display: block; font-family: Georgia, serif; font-size: 16px; font-weight: 400; }
+    .chat-person span { color: #8e897f; font-size: 9px; }
+    .chat-body { flex: 1; display: flex; flex-direction: column; padding: 22px 0; }
+    .chat-date { align-self: center; margin: 6px 0 22px; color: #6f6b61; font-size: 9px; letter-spacing: 1px; }
+    .bubble-row { display: flex; align-items: end; gap: 8px; }
+    .bubble-row .match-avatar { width: 29px; height: 29px; flex-basis: 29px; font-size: 14px; }
+    .bubble { max-width: 75%; padding: 12px 15px; border: 1px solid rgba(215, 181, 109, .18); border-radius: 4px 15px 15px 15px; background: #211f1a; color: #f1ece2; font-size: 13px; }
+    .chat-composer { display: flex; gap: 9px; padding: 11px 0 max(12px, env(safe-area-inset-bottom)); border-top: 1px solid rgba(255, 255, 255, .07); }
+    .chat-composer input { flex: 1; min-width: 0; height: 43px; padding: 0 13px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 22px; outline: 0; background: #1c1a16; color: var(--white); font-size: 12px; }
+    .chat-composer input:focus { border-color: rgba(215, 181, 109, .5); }
+    .chat-composer input::placeholder { color: #757066; }
+    .send-button { width: 43px; height: 43px; border: 0; border-radius: 50%; background: var(--gold); color: #17140d; font-size: 16px; cursor: pointer; }
+    .sent-bubble { align-self: flex-end; margin-top: 12px; border: 0; border-radius: 15px 4px 15px 15px; background: #a98542; color: #17140d; }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+    @media (max-height: 720px) {
+      .screen-heading { margin-top: 22px; margin-bottom: 17px; }
+      .form-field { margin-bottom: 13px; }
+      .card-stage { min-height: 320px; }
+      .hero { padding: 38px 0 30px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+
+    :root {
+      --bg: #121212;
+      --panel: #1b1b1b;
+      --panel-soft: #222;
+      --gold: #c7c7c7;
+      --gold-bright: #f4f4f4;
+      --muted: #929292;
+      --line: rgba(255, 255, 255, .12);
+      --white: #f5f5f5;
+      --danger: #b5b5b5;
+      font-family: Inter, "Helvetica Neue", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 350;
+      letter-spacing: -.15px;
+    }
+
+    html, body { background: #080808; }
+    .device {
+      background: #121212;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .7);
+    }
+    @media (min-width: 500px) {
+      .device {
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 26px;
+      }
+    }
+    .screen { padding-left: 24px; padding-right: 24px; }
+    .wordmark {
+      color: #f3f3f3;
+      font-family: inherit;
+      font-size: 25px;
+      font-weight: 400;
+      letter-spacing: -1.3px;
+    }
+    .wordmark span { color: #8b8b8b; }
+    .eyebrow {
+      color: #929292;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 2.2px;
+    }
+    .landing {
+      background:
+        radial-gradient(ellipse at 50% 34%, rgba(255, 255, 255, .055), transparent 39%),
+        #121212;
+    }
+    .brand-lockup .wordmark { font-size: 29px; }
+    .brand-lockup .eyebrow { margin-top: 8px; }
+    .hero { padding: 48px 0 38px; }
+    .seal {
+      width: 76px;
+      height: 76px;
+      margin-bottom: 34px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      color: #f4f4f4;
+      box-shadow: 0 0 46px rgba(255, 255, 255, .055), inset 0 0 24px rgba(255, 255, 255, .025);
+      font-family: inherit;
+      font-size: 27px;
+      font-weight: 300;
+    }
+    .hero h2 {
+      font-family: inherit;
+      font-size: clamp(34px, 9vw, 43px);
+      font-weight: 300;
+      letter-spacing: -2.4px;
+      line-height: 1.2;
+    }
+    .hero h2 em { color: #929292; font-weight: 300; }
+    .hero-copy {
+      max-width: 310px;
+      margin-top: 22px;
+      color: #a2a2a2;
+      font-size: 12px;
+      font-weight: 350;
+      line-height: 1.9;
+    }
+    .privacy-note {
+      padding: 12px 6px;
+      border: 0;
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 0;
+      background: transparent;
+      color: #777;
+      font-size: 10px;
+    }
+    .privacy-note strong { color: #bcbcbc; font-weight: 500; letter-spacing: 1.2px; }
+    .primary-button {
+      min-height: 54px;
+      border: 0;
+      border-radius: 4px;
+      background: #f1f1f1;
+      color: #111;
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: .1px;
+      box-shadow: none;
+      transition: transform .18s, background .18s;
+    }
+    .primary-button:hover { background: #d7d7d7; filter: none; }
+    .subtle-footer { color: #666; font-size: 10px; letter-spacing: .2px; }
+    .screen-heading { margin-top: 34px; }
+    .screen-heading h2, .loading-screen h2, .discovery-heading h2, .empty-state h2, .message-heading h2 {
+      font-family: inherit;
+      font-weight: 350;
+      letter-spacing: -1.3px;
+    }
+    .screen-heading h2 { font-size: 29px; }
+    .screen-heading p, .message-heading p { color: #858585; font-weight: 350; }
+    .form-field label, .field-label { color: #d2d2d2; font-weight: 450; }
+    .text-input {
+      height: 52px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, .035);
+      font-weight: 350;
+    }
+    .text-input:focus {
+      border-color: rgba(255, 255, 255, .42);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, .035);
+    }
+    .text-input::placeholder { color: #696969; }
+    .user-avatar {
+      border: 1px solid rgba(255, 255, 255, .18);
+      background: linear-gradient(145deg, #343434, #1b1b1b);
+      color: #ddd;
+      font-family: inherit;
+    }
+    .secondary-button, .avatar-choice {
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, .04);
+      color: #ddd;
+    }
+    .avatar-choice { border-radius: 50%; }
+    .avatar-choice[aria-pressed="true"] {
+      border-color: rgba(255, 255, 255, .72);
+      background: rgba(255, 255, 255, .15);
+    }
+    .local-only { color: #707070; }
+    .spinner {
+      border-color: rgba(255, 255, 255, .1);
+      border-top-color: #f2f2f2;
+      border-right-color: #898989;
+      box-shadow: 0 0 36px rgba(255, 255, 255, .06);
+    }
+    .loading-screen h2 { font-size: 24px; }
+    .loading-screen p { color: #929292; }
+    .loading-dots { color: #d2d2d2; }
+    .app-header .wordmark { font-size: 22px; }
+    .header-tag { color: #858585; font-size: 8px; letter-spacing: 1.7px; }
+    .notification {
+      gap: 12px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 14px;
+      background: rgba(31, 31, 31, .82);
+      box-shadow: 0 14px 45px rgba(0, 0, 0, .42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+    .notification-icon, .notification-text strong { color: #f0f0f0; }
+    .notification-text { font-weight: 350; }
+    .notice-close { color: #999; }
+    .discovery-heading h2 { font-size: 24px; }
+    .discovery-heading p { color: #838383; }
+    .count-label { color: #aaa; }
+    .card-stage { min-height: 370px; }
+    .profile-card {
+      border: 0;
+      border-radius: 14px;
+      background: #222;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .35);
+    }
+    .profile-card::after {
+      background: linear-gradient(180deg, transparent 28%, rgba(0, 0, 0, .18) 45%, rgba(0, 0, 0, .88) 100%);
+    }
+    .card-placeholder {
+      background: radial-gradient(circle at 50% 32%, #444, #242424 62%, #151515);
+      color: rgba(255, 255, 255, .72);
+      font-family: inherit;
+      font-size: 100px;
+      font-weight: 250;
+    }
+    .card-topline { top: 15px; left: 15px; gap: 7px; }
+    .vip-pill, .verified-pill {
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 3px;
+      background: rgba(15, 15, 15, .4);
+      color: #ededed;
+      font-size: 8px;
+      font-weight: 450;
+      letter-spacing: 1px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .verified-pill { color: #c9c9c9; }
+    .swipe-stamp { border-radius: 3px; }
+    .stamp-like { color: #d8d8d8; border-color: #d8d8d8; }
+    .stamp-pass { color: #aaa; border-color: #aaa; }
+    .profile-name {
+      font-family: inherit;
+      font-size: 31px;
+      font-weight: 350;
+      letter-spacing: -1.2px;
+    }
+    .profile-name span { font-size: 22px; font-weight: 300; color: #ddd; }
+    .profile-job {
+      margin: 7px 0 0;
+      color: #e1dadd;
+      font-family: "Iowan Old Style", "Baskerville", Georgia, serif;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: .15px;
+    }
+    .profile-location { margin: 5px 0 0; color: #bcb8b9; font-size: 10px; font-weight: 350; letter-spacing: .25px; }
+    .card-divider { background: rgba(255, 255, 255, .24); }
+    .greeting { color: #eee; font-size: 12px; font-weight: 350; }
+    .card-actions { gap: 18px; padding: 14px 0 12px; }
+    .round-action {
+      width: 52px;
+      height: 52px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(255, 255, 255, .055);
+      color: #e4e4e4;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .round-action.pass { border-color: rgba(255, 255, 255, .18); color: #e4e4e4; font-size: 25px; }
+    .round-action.like {
+      width: 60px;
+      height: 60px;
+      border-color: rgba(255, 255, 255, .8);
+      background: #f0f0f0;
+      color: #161616;
+      font-size: 23px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, .1);
+    }
+    .round-action:hover { background: rgba(255, 255, 255, .13); }
+    .round-action.like:hover { background: #d6d6d6; }
+    .action-hint { color: #777; font-size: 9px; letter-spacing: .15px; }
+    .tab-bar {
+      margin: 0 -24px;
+      padding: 11px 24px max(10px, env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      background: rgba(18, 18, 18, .94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .tab { color: #737373; font-size: 9px; font-weight: 400; }
+    .tab[aria-current="page"] { color: #f2f2f2; }
+    .tab-icon { font-size: 20px; font-weight: 300; }
+    .empty-state .seal {
+      border-color: rgba(255, 255, 255, .14);
+      color: #eee;
+      box-shadow: 0 0 35px rgba(255, 255, 255, .045);
+    }
+    .empty-state h2 { font-size: 24px; }
+    .empty-state p { color: #888; }
+    .message-heading h2 { font-size: 30px; }
+    .match-row { border-bottom-color: rgba(255, 255, 255, .07); }
+    .match-avatar {
+      border: 1px solid rgba(255, 255, 255, .16);
+      background: #262626;
+      color: #e3e3e3;
+      font-family: inherit;
+    }
+    .match-copy strong { font-family: inherit; font-size: 16px; font-weight: 400; }
+    .match-copy span { color: #898989; font-weight: 350; }
+    .match-meta { color: #747474; }
+    .new-dot { background: #eee; }
+    .chat-header { border-bottom-color: rgba(255, 255, 255, .08); }
+    .back-button { color: #eee; }
+    .chat-person strong { font-family: inherit; font-weight: 400; }
+    .chat-person span { color: #888; }
+    .chat-date { color: #737373; }
+    .bubble {
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 4px 14px 14px 14px;
+      background: #242424;
+      color: #eee;
+      font-weight: 350;
+    }
+    .chat-composer { border-top-color: rgba(255, 255, 255, .08); }
+    .chat-composer input {
+      border-color: rgba(255, 255, 255, .1);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, .04);
+      font-weight: 350;
+    }
+    .chat-composer input:focus { border-color: rgba(255, 255, 255, .4); }
+    .chat-composer input::placeholder { color: #777; }
+    .send-button { border-radius: 4px; background: #eee; color: #111; }
+    .sent-bubble { border: 0; border-radius: 14px 4px 14px 14px; background: #e8e8e8; color: #171717; }
+  .profile-screen { min-height: 100svh; }
+  #profile-form { display: flex; flex: 1; flex-direction: column; }
+  #profile-form .form-spacer { flex: 1 1 auto; min-height: 10px; }
+  #profile-form > .primary-button { flex: 0 0 auto; margin-top: auto; }
+  @media (max-height: 760px) {
+    .profile-screen { padding-top: max(17px, env(safe-area-inset-top)); }
+    .profile-screen .screen-heading { margin: 22px 0 16px; }
+    .profile-screen .profile-photo-row { margin-bottom: 17px; }
+    .profile-screen .form-field { margin-bottom: 12px; }
+    .profile-screen .text-input { height: 46px; }
+  }
+  .landing {
+    position: relative;
+    justify-content: center;
+    gap: 28px;
+    padding: max(42px, env(safe-area-inset-top)) 27px max(34px, env(safe-area-inset-bottom));
+    background:
+      radial-gradient(ellipse at 50% 48%, rgba(246, 218, 225, .075), transparent 42%),
+      radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, .025), transparent 50%),
+      #141313;
+  }
+  .landing .brand-lockup { position: static; width: auto; padding: 0; text-align: center; transform: none; }
+  .landing .brand-lockup .wordmark {
+    color: #f7f1f2;
+    font-family: "Avenir Next", "Nunito Sans", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(38px, 10vw, 48px);
+    font-weight: 400;
+    letter-spacing: -1.8px;
+  }
+  .landing .brand-lockup .wordmark span { color: #f1cbd4; }
+  .landing .brand-lockup .eyebrow { display: none; }
+  .landing .hero { display: none; }
+  .landing-info {
+    max-width: 310px;
+    margin: 0 auto;
+    color: #b6adaf;
+    text-align: center;
+  }
+  .landing-info .eyebrow {
+    display: block;
+    margin-bottom: 12px;
+    color: #d6bfc5;
+    font-size: 9px;
+    font-weight: 450;
+    letter-spacing: 1.8px;
+  }
+  .landing-info p {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 350;
+    line-height: 1.8;
+    word-break: keep-all;
+  }
+  .landing-info .security-copy {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    color: #858083;
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .landing > div:last-child {
+    position: absolute;
+    right: 27px;
+    bottom: max(34px, env(safe-area-inset-bottom));
+    left: 27px;
+  }
+  .landing .privacy-note, .landing .subtle-footer { display: none; }
+  .landing .primary-button {
+    min-height: 56px;
+    border: 1px solid rgba(250, 230, 235, .34);
+    border-radius: 6px;
+    background: rgba(250, 230, 235, .075);
+    color: #f8eef0;
+    font-size: 12px;
+    font-weight: 450;
+    letter-spacing: 1.1px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, .1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: background .22s ease, border-color .22s ease, box-shadow .22s ease, transform .18s ease;
+  }
+  .landing .primary-button:hover {
+    border-color: rgba(255, 224, 232, .72);
+    background: rgba(255, 224, 232, .14);
+    box-shadow: 0 0 28px rgba(246, 202, 215, .14), inset 0 1px rgba(255, 255, 255, .18);
+  }
+  .landing .subtle-footer {
+    margin-top: 10px;
+    color: #686868;
+    font-size: 9px;
+    letter-spacing: .4px;
+  }
+  .loading-screen .wordmark { margin: 0 0 28px; color: #f3f3f3; font-size: 27px; font-weight: 400; letter-spacing: -1px; }
+  .chat-brand { padding: 0 0 16px; }
+  .chat-brand .wordmark { color: #f3f3f3; font-size: 21px; font-weight: 400; letter-spacing: -1px; }
+  @media (max-height: 700px) {
+    .landing { gap: 18px; }
+    .landing-info .security-copy { margin-top: 10px; padding-top: 10px; }
+    .landing > div:last-child { bottom: max(20px, env(safe-area-inset-bottom)); }
+  }
+  .main-nav {
+    display: flex;
+    gap: 8px;
+    margin: 0 -4px 18px;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .025);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .main-nav button {
+    flex: 1;
+    min-height: 39px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #858585;
+    font-size: 11px;
+    font-weight: 450;
+    cursor: pointer;
+    transition: color .18s, background .18s, border-color .18s;
+  }
+  .main-nav button[aria-current="page"] {
+    border-color: rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, .085);
+    color: #f4f1f2;
+  }
+  .lounge-screen {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .lounge-screen::-webkit-scrollbar { display: none; }
+  .lounge-heading { margin: 8px 0 19px; }
+  .lounge-heading .eyebrow { color: #bdaeb3; }
+  .lounge-heading h2 {
+    margin: 8px 0 0;
+    color: #f2eeee;
+    font-size: 27px;
+    font-weight: 350;
+    letter-spacing: -1.2px;
+  }
+  .lounge-heading p { margin: 7px 0 0; color: #858083; font-size: 11px; line-height: 1.6; }
+  .community-feed { display: grid; gap: 12px; padding-bottom: 20px; }
+  .post-card {
+    padding: 16px 15px 14px;
+    border: 1px solid rgba(255, 255, 255, .09);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .18), inset 0 1px rgba(255, 255, 255, .035);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .post-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #8e8a8c; font-size: 9px; }
+  .post-author { color: #d6cbd0; font-size: 10px; letter-spacing: .25px; }
+  .post-card h3 { margin: 12px 0 8px; color: #f3f0f1; font-size: 15px; font-weight: 450; letter-spacing: -.25px; }
+  .post-body { margin: 0; color: #b5b0b2; font-size: 11px; line-height: 1.8; white-space: pre-wrap; word-break: keep-all; }
+  .post-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 10px; }
+  .like-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .045);
+    color: #d9d2d4;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background .18s, transform .18s;
+  }
+  .like-button:hover { background: rgba(244, 210, 220, .13); }
+  .like-button:active { transform: scale(.96); }
+  .comments-toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .045);
+    color: #d9d2d4;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background .18s, transform .18s;
+  }
+  .comments-toggle:hover { background: rgba(255, 255, 255, .09); }
+  .comments-toggle:active { transform: scale(.96); }
+  .comment-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows .25s ease, opacity .2s ease;
+  }
+  .comment-panel.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .comment-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .post-comments { padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .07); }
+  .comments-label { margin: 0 0 8px; color: #8f898c; font-size: 9px; letter-spacing: .5px; }
+  .comment-list { display: grid; gap: 7px; margin-bottom: 11px; }
+  .comment { display: flex; gap: 7px; color: #bcb6b9; font-size: 10px; line-height: 1.55; }
+  .comment-author { flex: 0 0 auto; color: #e3d6db; }
+  .comment-text { min-width: 0; overflow-wrap: anywhere; }
+  .comments-connection-status { margin: 0 0 10px; color: #a59da1; font-size: 10px; line-height: 1.6; }
+  .comments-connection-status[role="alert"] { color: #f0a3a3; }
+  .comments-retry {
+    margin-left: 6px;
+    padding: 3px 7px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, .06);
+    color: #e7e1e3;
+    font-size: 9px;
+    cursor: pointer;
+  }
+  .like-button[aria-pressed="true"] {
+    border-color: rgba(246, 202, 215, .32);
+    background: rgba(246, 202, 215, .14);
+    color: #f5d5de;
+  }
+  .comment-locked {
+    margin: 0;
+    padding: 10px 11px;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, .025);
+    color: #858083;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .comment-form { display: grid; grid-template-columns: minmax(64px, .65fr) minmax(0, 1.6fr) auto; gap: 6px; }
+  .comment-form input {
+    min-width: 0;
+    height: 35px;
+    padding: 0 9px;
+    border: 1px solid rgba(255, 255, 255, .09);
+    border-radius: 6px;
+    outline: none;
+    background: rgba(0, 0, 0, .18);
+    color: #f2eeee;
+    font-size: 10px;
+  }
+  .comment-form input:focus { border-color: rgba(242, 210, 220, .38); }
+  .comment-form input::placeholder { color: #777174; }
+  .comment-form input:disabled, .comment-form button:disabled { cursor: not-allowed; opacity: .45; }
+  .comment-form button {
+    padding: 0 10px;
+    border: 1px solid rgba(246, 221, 228, .22);
+    border-radius: 6px;
+    background: rgba(246, 221, 228, .09);
+    color: #eee6e8;
+    font-size: 10px;
+    cursor: pointer;
+  }
+  </style>
+</head>
+<body>
+  <main class="device" id="app" aria-live="polite"></main>
+
+  <script>
+    // 남자 9명 프로필 데이터: 이름, 나이, 직업, 위치, 인사말, 사진 주소를 아래에서 직접 수정하세요.
+    // 사진은 image에 이미지 URL을 넣으면 됩니다. 프로필을 추가하거나 삭제할 때 배열 항목을 편집하세요.
+    const maleProfiles = [
+      {
+        name: "변의주",
+        age: 24,
+        job: "Actor",
+        location: "서울",
+        greeting: "안녕하세요",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-59 009.jpeg"
+      },
+      {
+        name: "코가 유다이",
+        age: 29,
+        job: "Track Athlete",
+        location: "서울",
+        greeting: "안녕하세요!",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-59 007.jpeg"
+      },
+      {
+        name: "Nicholas",
+        age: 24,
+        job: "Fashion Designer",
+        location: "서울",
+        greeting: "Hi~.",
+        image: "images/KakaoTalk_Photo_2026-10-25-17-22-22.jpeg"
+      },
+      {
+        name: "아사쿠라 죠",
+        age: 22,
+        job: "Basketball player",
+        location: "서울",
+        greeting: "안녕하세요...!",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-49-23.jpeg"
+      },
+      {
+        name: "전유진",
+        age: 22,
+        job: "Musician",
+        location: "서울",
+        greeting: "안냥하세여",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-59 006.jpeg"
+      },
+      {
+        name: "마우스 리키",
+        age: 20,
+        job: "Musical Actor",
+        location: "서울",
+        greeting: "안녕",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-58 002.jpeg"
+      },
+      {
+        name: "무라타 후마",
+        age: 28,
+        job: "Dancer",
+        location: "서울",
+        greeting: "안녕하세요!!!!.",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-58 003.jpeg"
+      },
+      {
+        name: "타카야마 리키",
+        age: 21,
+        job: "Dancer",
+        location: "서울",
+        greeting: "하이",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-58 001.jpeg"
+      },
+      {
+        name: "룽현우",
+        age: 21,
+        job: "Actor",
+        location: "서울",
+        greeting: "안녕?",
+        image: "images/KakaoTalk_Photo_2026-10-25-15-38-58 004.jpeg"
+      }
+    ];
+
+    // VIP Lounge 게시글: 제목, 본문, 잠금 여부와 기본 댓글을 여기서 수정하세요.
+    const communityPosts = [
+      {
+        title: "일반인들은 이런 앱 있는 거 모르겠지?ㅋㅋㅋㅋ",
+        author: "howling",
+        time: "12분 전",
+        body: "제곧내",
+        likes: 28,
+        isCommentLocked: true,
+        comments: [
+          { author: "flow6", text: "밖에서 이 앱 얘기 함부로 꺼내는 애들 없어서 클린함 ㅇㅇ." },
+          { author: "after", text: "어차피 캡처도 금지라 스크린샷 찍으면 바로 정지 당하잖아" }
+        ]
+      },
+      {
+        title: "매칭되고 5초 만에 선톡 오면 호감 있는 거 맞지?",
+        author: "bluehour",
+        time: "38분 전",
+        body: "제곧내임. 프로필 스와이프하자마자 5초도 안 돼서 1:1 대화방으로 인사 오길래 당황했다...",
+        likes: 41,
+        isCommentLocked: false,
+        comments: [
+          { author: "orbit", text: "폰 붙들고 사나?" },
+          { author: "vinyl", text: "요즘 다들 연애가 급급하긴 한가봄" }
+        ]
+      },
+      {
+        title: "여기 프로필 사진 올릴 때 제발 명품 티 좀 내지 마라",
+        author: "softfocus",
+        time: "1시간 전",
+        body: "가입된 사람들이면 서로 견적 다 나오는데, 굳이 시계랑 차 키 사진 대놓고 찍어서 올리는 애들 좀 촌스러움",
+        likes: 19,
+        isCommentLocked: true,
+        comments: [
+          { author: "morrow", text: "ㄹㅇ 인정 ㅋㅋㅋ 억지로 로이빅통 가방 나오게 찍는 애들 컷해라" },
+          { author: "onew", text: "그게 fashion이야~" }
+        ]
+      },
+      {
+        title: "다들 첫 데이트 어디서 해? 추천 좀!",
+        author: "unseen",
+        time: "2시간 전",
+        body: "이번에 매칭된 사람이랑 첫 데이트인데 마땅히 갈 곳이 없네",
+        likes: 56,
+        isCommentLocked: false,
+        comments: [
+          { author: "dear stranger", text: "걍 집 데이트나 해;;;" },
+          { author: "slowly", text: "요즘 유명한 바 있던데 거기 가" }
+        ]
+      },
+      {
+        title: "데스피치 안 걸리는 법 공유함ㅇㅇ",
+        author: "midnight",
+        time: "4시간 전",
+        body: "한남동 그 빌라 지하 주차장으로 직행하는 코스가 아직까지는 제일 안전함. 그리고 차 썬팅 짙게 하삼",
+        likes: 33,
+        isCommentLocked: true,
+        comments: [
+          { author: "stilllife", text: "거기 이미 기자들 상주한다는 소문 돌던데 조심해라" },
+          { author: "daydream", text: "ㄱㅅ" }
+        ]
+      },
+      {
+        title: "여기 남녀끼리만 매칭되나요?",
+        author: "333222",
+        time: "어제",
+        body: "갑자기 남자 프로필이 떴는데 실수로 스와이프 해서 매칭됨 오류죠?",
+        likes: 24,
+        isCommentLocked: false,
+        comments: [
+          { author: "dawn", text: "너 그거 실수 아니지" },
+          
+        ]
+      }
+    ];
+
+    const SUPABASE_URL = "https://adlmgygyyrddnfwczikh.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_tmG0jQHwUvVNtJEFR3qRiw_aXbsBPnC";
+    const COMMENT_ENABLED_POST_IDS = new Set([2, 4, 6]);
+    const SUPABASE_ENDPOINT = new URL(SUPABASE_URL);
+    let supabaseClient = null;
+    let supabaseClientError = null;
+    try {
+      if (SUPABASE_ENDPOINT.protocol !== "https:") {
+        throw new Error("Supabase Project URL은 HTTPS 주소여야 합니다.");
+      }
+      if (!SUPABASE_ANON_KEY.startsWith("sb_publishable_")) {
+        throw new Error("Supabase Publishable key 형식이 올바르지 않습니다.");
+      }
+      if (!window.supabase || typeof window.supabase.createClient !== "function") {
+        throw new Error("Supabase v2 CDN을 불러오지 못했습니다.");
+      }
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        },
+        global: { fetch: fetchSupabaseWithDiagnostics }
+      });
+    } catch (error) {
+      supabaseClientError = error;
+      console.error("[VIP Lounge] Supabase 클라이언트 초기화 실패:", error);
+    }
+    const app = document.querySelector("#app");
+    const avatarChoices = ["✦", "☾", "❋", "◇"];
+    const state = {
+      screen: "landing",
+      profile: { name: "", age: "", job: "", avatar: avatarChoices[0], imageUrl: "" },
+      cardIndex: 0,
+      matches: [],
+      activeMatch: null,
+      notice: null,
+      objectUrl: null,
+      loungePosts: communityPosts.map(post => ({
+        ...post,
+        isLiked: false,
+        isCommentsOpen: false,
+        comments: post.comments.map(comment => ({ ...comment, isApproved: true }))
+      })),
+      matchScreenBeforeLounge: "swipe",
+      loungeCommentsLoaded: false,
+      loungeCommentsLoading: false,
+      loungeCommentsRequestId: 0,
+      loungeCommentsError: ""
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+
+    function initials(name) {
+      return escapeHtml((name || "P").trim().charAt(0) || "P");
+    }
+
+    async function fetchSupabaseWithDiagnostics(input, init = {}) {
+      const requestUrl = input instanceof Request ? input.url : String(input);
+      const method = (init.method || (input instanceof Request ? input.method : "GET")).toUpperCase();
+      const canRetry = method === "GET" || method === "HEAD";
+      const maxAttempts = canRetry ? 3 : 1;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+          return await window.fetch(input, init);
+        } catch (error) {
+          const message = supabaseErrorMessage(error);
+          const diagnostic = {
+            message,
+            name: error instanceof Error ? error.name : typeof error,
+            method,
+            requestUrl,
+            pageOrigin: window.location.origin,
+            attempt,
+            maxAttempts,
+            likelyCauses: [
+              "네트워크/DNS 연결 또는 광고 차단 확장 프로그램",
+              "Supabase 프로젝트 URL 또는 프로젝트 상태",
+              "Supabase API의 CORS 허용 Origin 설정"
+            ]
+          };
+          console.error("[VIP Lounge] Supabase 네트워크 요청 실패:", diagnostic, error);
+
+          if (attempt < maxAttempts && error instanceof TypeError) {
+            await new Promise(resolve => window.setTimeout(resolve, attempt * 500));
+            continue;
+          }
+
+          if (error instanceof TypeError && message.toLowerCase().includes("load failed")) {
+            throw new TypeError(
+              `${message}. 요청 주소: ${requestUrl}. ` +
+              `페이지 Origin: ${window.location.origin}. ` +
+              "네트워크와 Supabase CORS 허용 Origin을 확인해 주세요."
+            );
+          }
+          throw error;
+        }
+      }
+
+      throw new Error("Supabase 네트워크 요청을 완료하지 못했습니다.");
+    }
+
+    function supabaseErrorMessage(error) {
+      if (error instanceof Error && error.message) return error.message;
+      if (typeof error === "string") return error;
+      if (error && typeof error === "object") {
+        const knownFields = ["message", "details", "hint", "code"]
+          .filter(key => typeof error[key] === "string" && error[key].trim())
+          .map(key => `${key}: ${error[key].trim()}`);
+        if (knownFields.length) return knownFields.join("\n");
+        try {
+          const serialized = JSON.stringify(error);
+          if (serialized && serialized !== "{}") return serialized;
+        } catch (serializationError) {
+          console.error("[VIP Lounge] 오류 객체 직렬화 실패:", serializationError);
+        }
+        return Object.prototype.toString.call(error);
+      }
+      return String(error);
+    }
+
+    function getSupabaseClient() {
+      if (supabaseClient) return supabaseClient;
+      throw supabaseClientError || new Error("Supabase 클라이언트를 사용할 수 없습니다.");
+    }
+
+    async function refreshLoungeComments() {
+      const requestId = ++state.loungeCommentsRequestId;
+      const { data: records, error } = await getSupabaseClient()
+        .from("lounge_comments")
+        .select("id, post_id, nickname, content, status, created_at")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      if (!Array.isArray(records)) {
+        throw new Error("댓글 목록 응답 형식이 올바르지 않습니다.");
+      }
+      const commentsByPost = new Map();
+      for (const record of records) {
+        if (
+          !Number.isInteger(record.id) ||
+          !Number.isInteger(record.post_id) ||
+          typeof record.nickname !== "string" ||
+          typeof record.content !== "string" ||
+          typeof record.status !== "string" ||
+          typeof record.created_at !== "string" ||
+          Number.isNaN(Date.parse(record.created_at))
+        ) {
+          throw new Error(
+            "Supabase 댓글 데이터의 컬럼 또는 형식이 올바르지 않습니다. " +
+            "필수 컬럼: id, post_id, nickname, content, status, created_at."
+          );
+        }
+        if (record.post_id < 1 || record.post_id > state.loungePosts.length) continue;
+        const comments = commentsByPost.get(record.post_id) || [];
+        comments.push({
+          id: record.id,
+          author: record.nickname,
+          text: record.content,
+          isApproved: true,
+          isFromDatabase: true
+        });
+        commentsByPost.set(record.post_id, comments);
+      }
+      if (requestId !== state.loungeCommentsRequestId) return;
+      state.loungePosts.forEach((post, index) => {
+        const fixedComments = post.comments.filter(comment => !comment.isFromDatabase);
+        post.comments = [...fixedComments, ...(commentsByPost.get(index + 1) || [])];
+      });
+      state.loungeCommentsLoaded = true;
+      state.loungeCommentsError = "";
+    }
+
+    async function loadLoungeComments() {
+      if (state.loungeCommentsLoaded || state.loungeCommentsLoading) return;
+      state.loungeCommentsLoading = true;
+      state.loungeCommentsError = "";
+      try {
+        await refreshLoungeComments();
+      } catch (error) {
+        state.loungeCommentsError = supabaseErrorMessage(error);
+        console.error("[VIP Lounge] Supabase 댓글 조회 실패:", error);
+        window.alert(supabaseErrorMessage(error));
+      } finally {
+        state.loungeCommentsLoading = false;
+        renderLoungePreservingScroll();
+      }
+    }
+
+    async function submitLoungeComment(form) {
+      const nicknameInput = form.elements.nickname;
+      const commentInput = form.elements.text;
+      const nickname = nicknameInput.value.trim();
+      const text = commentInput.value.trim();
+      const postIndex = Number(form.dataset.commentPost);
+      const postId = postIndex + 1;
+      const post = state.loungePosts[postIndex];
+      if (
+        !post ||
+        post.isCommentLocked ||
+        !COMMENT_ENABLED_POST_IDS.has(postId) ||
+        form.dataset.submitting
+      ) return;
+      nicknameInput.setCustomValidity(nickname ? "" : "닉네임을 입력해 주세요.");
+      commentInput.setCustomValidity(text ? "" : "댓글 내용을 입력해 주세요.");
+      if (!form.reportValidity()) return;
+
+      form.dataset.submitting = "true";
+      form.querySelector('button[type="submit"]').disabled = true;
+      form.querySelector('button[type="submit"]').textContent = "저장 중";
+      state.loungeCommentsError = "";
+      let inserted = false;
+      try {
+        const { data: savedComment, error } = await getSupabaseClient()
+          .from("lounge_comments")
+          .insert({
+            post_id: postId,
+            nickname,
+            content: text,
+            status: "검토중"
+          })
+          .select("id, post_id, nickname, content, status, created_at")
+          .single();
+        if (error) throw error;
+        if (
+          !savedComment ||
+          savedComment.post_id !== postId ||
+          savedComment.nickname !== nickname ||
+          savedComment.content !== text ||
+          typeof savedComment.status !== "string" ||
+          !Number.isInteger(savedComment.id) ||
+          typeof savedComment.created_at !== "string"
+        ) {
+          throw new Error("저장된 댓글을 확인할 수 없습니다. 테이블 컬럼 설정을 확인해 주세요.");
+        }
+        inserted = true;
+        post.comments.push({
+          id: savedComment.id,
+          author: savedComment.nickname,
+          text: savedComment.content,
+          isApproved: true,
+          isFromDatabase: true
+        });
+        renderLoungePreservingScroll();
+        await refreshLoungeComments();
+        state.loungeCommentsError = "";
+        renderLoungePreservingScroll();
+      } catch (error) {
+        state.loungeCommentsError = inserted
+          ? `댓글은 저장됐지만 최신 목록을 불러오지 못했습니다. ${supabaseErrorMessage(error)}`
+          : `댓글을 저장하지 못했습니다. ${supabaseErrorMessage(error)}`;
+        console.error(
+          inserted ? "[VIP Lounge] Supabase 댓글 재조회 실패:" : "[VIP Lounge] Supabase 댓글 저장 실패:",
+          error
+        );
+        renderLoungePreservingScroll();
+        window.alert(supabaseErrorMessage(error));
+      } finally {
+        delete form.dataset.submitting;
+        if (form.isConnected) {
+          const submitButton = form.querySelector('button[type="submit"]');
+          if (submitButton) submitButton.disabled = false;
+        }
+      }
+    }
+
+    function renderLanding() {
+      app.innerHTML = `
+        <section class="screen landing">
+          <header class="brand-lockup">
+            <h1 class="wordmark">Perfect Match♥</h1>
+          </header>
+          <section class="landing-info" aria-label="앱 소개 및 개인정보 안내">
+            <span class="eyebrow">A PRIVATE MEMBERS CLUB</span>
+            <p>엄격한 신원 검증을 통과한 탑클래스 셀럽과 크리에이티브 리더를 위한 비공개 프라이빗 커뮤니티입니다.</p>
+            <p class="security-copy">허가받지 않은 스크린샷 및 내부 정보 유출 시 법적 책임을 질 수 있습니다.<br>프로필 정보는 이 체험 페이지의 브라우저에서만 사용됩니다.</p>
+          </section>
+          <div>
+            <button class="primary-button" type="button" data-action="begin">VIP 입장 신청하기</button>
+          </div>
+        </section>`;
+    }
+
+    function renderProfile() {
+      const photo = state.profile.imageUrl
+        ? `<img src="${state.profile.imageUrl}" alt="선택한 프로필 사진">`
+        : initials(state.profile.name || state.profile.avatar);
+      app.innerHTML = `
+        <section class="screen profile-screen">
+          <header class="brand-lockup" style="text-align:left"><h1 class="wordmark">Perfect Match♥</h1></header>
+          <div class="screen-heading">
+            <span class="eyebrow">YOUR INTRODUCTION</span>
+            <h2>프로필을 알려주세요</h2>
+            <p>나만의 매력을 담아 커뮤니티에 첫인사를 건네보세요.</p>
+          </div>
+          <form id="profile-form" novalidate>
+            <div class="profile-photo-row">
+              <div class="user-avatar" id="user-avatar" aria-label="프로필 이미지 미리보기">${photo}</div>
+              <div>
+                <span class="field-label">프로필 이미지</span>
+                <div class="photo-actions">
+                  <label class="secondary-button" for="photo-file" style="display:grid;place-items:center">사진 업로드</label>
+                  <input class="sr-only" id="photo-file" type="file" accept="image/*">
+                </div>
+                <div class="avatar-options" aria-label="기본 아바타 선택">
+                  ${avatarChoices.map((avatar, index) => `<button class="avatar-choice" type="button" data-avatar="${index}" aria-label="기본 아바타 ${index + 1}" aria-pressed="${!state.profile.imageUrl && state.profile.avatar === avatar}">${avatar}</button>`).join("")}
+                </div>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="profile-name">이름</label>
+              <input class="text-input" id="profile-name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="이름을 입력해 주세요" value="${escapeHtml(state.profile.name)}" required>
+            </div>
+            <div class="form-field">
+              <label for="profile-age">나이</label>
+              <input class="text-input" id="profile-age" name="age" type="number" inputmode="numeric" min="18" max="99" placeholder="만 나이" value="${escapeHtml(state.profile.age)}" required>
+            </div>
+            <div class="form-field">
+              <label for="profile-job">직업</label>
+              <input class="text-input" id="profile-job" name="job" type="text" maxlength="60" placeholder="직업 또는 활동 분야" value="${escapeHtml(state.profile.job)}" required>
+            </div>
+            <div class="form-spacer"></div>
+            <button class="primary-button" type="submit">완료</button>
+            <p class="local-only">입력한 정보는 브라우저 메모리에서만 사용됩니다.</p>
+          </form>
+        </section>`;
+
+      const form = document.querySelector("#profile-form");
+      form.addEventListener("input", event => {
+        const field = event.target;
+        if (field.name && Object.hasOwn(state.profile, field.name)) state.profile[field.name] = field.value;
+      });
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const age = Number(state.profile.age);
+        if (age < 18 || age > 99) {
+          document.querySelector("#profile-age").setCustomValidity("만 18세 이상 99세 이하로 입력해 주세요.");
+          document.querySelector("#profile-age").reportValidity();
+          document.querySelector("#profile-age").setCustomValidity("");
+          return;
+        }
+        state.screen = "loading";
+        render();
+        window.setTimeout(() => updateLoadingStage("VIP 자격 심사 중...", "입력하신 정보로 멤버십 기준을 확인하고 있습니다."), 1800);
+        window.setTimeout(() => updateLoadingStage("신원 확인 완료!", "프라이빗 서클에 오신 것을 환영합니다."), 3800);
+        window.setTimeout(() => {
+          state.screen = "swipe";
+          render();
+        }, 5500);
+      });
+      document.querySelectorAll("[data-avatar]").forEach(button => {
+        button.addEventListener("click", () => {
+          clearSelectedPhoto();
+          state.profile.avatar = avatarChoices[Number(button.dataset.avatar)];
+          renderProfile();
+        });
+      });
+      document.querySelector("#photo-file").addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          event.target.value = "";
+          window.alert("이미지 파일을 선택해 주세요.");
+          return;
+        }
+        clearSelectedPhoto();
+        state.objectUrl = URL.createObjectURL(file);
+        state.profile.imageUrl = state.objectUrl;
+        renderProfile();
+      });
+    }
+
+    function clearSelectedPhoto() {
+      if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+      state.objectUrl = null;
+      state.profile.imageUrl = "";
+    }
+
+    function renderLoading() {
+      app.innerHTML = `
+        <section class="screen loading-screen">
+          <h1 class="wordmark">Perfect Match♥</h1>
+          <div class="spinner" aria-hidden="true"></div>
+          <h2 id="loading-title">프로필 데이터 암호화 중...</h2>
+          <p id="loading-copy">안전하게 정보를 준비하고 있습니다.</p>
+          <span class="loading-dots" aria-hidden="true">•••</span>
+        </section>`;
+    }
+
+    function updateLoadingStage(titleText, copyText) {
+      if (state.screen !== "loading") return;
+      const title = document.querySelector("#loading-title");
+      const copy = document.querySelector("#loading-copy");
+      if (title && copy) {
+        title.textContent = titleText;
+        copy.textContent = copyText;
+      }
+    }
+
+    function renderSwipeCard(profile, index) {
+      return `
+        <article class="profile-card" data-card-index="${index}" aria-label="${escapeHtml(profile.name)}, ${profile.age}세">
+          <img src="${profile.image}" alt="${escapeHtml(profile.name)} 프로필 사진" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'">
+          <div class="card-placeholder" aria-hidden="true" style="display:none">${initials(profile.name)}</div>
+          <div class="card-topline"><span class="vip-pill">PRIVATE CIRCLE</span><span class="verified-pill">✦ VERIFIED</span></div>
+          <span class="swipe-stamp stamp-like">LIKE</span><span class="swipe-stamp stamp-pass">PASS</span>
+          <div class="card-details">
+            <h3 class="profile-name">${escapeHtml(profile.name)} <span>${profile.age}</span></h3>
+            <p class="profile-job">${escapeHtml(profile.job)}</p>
+            <p class="profile-location">${escapeHtml(profile.location)}</p>
+          </div>
+        </article>`;
+    }
+
+    function renderSwipe() {
+      const hasCard = state.cardIndex < maleProfiles.length;
+      app.innerHTML = `
+        <section class="screen app-screen swipe-screen">
+          ${renderNotification()}
+          ${renderMainNav("match")}
+          <div class="discovery-heading"><div><h2>오늘의 인연</h2><p>마음이 가는 프로필을 만나보세요.</p></div><span class="count-label">${hasCard ? `${state.cardIndex + 1} / ${maleProfiles.length}` : "완료"}</span></div>
+          ${hasCard ? `
+            <div class="card-stage" id="card-stage">${renderSwipeCard(maleProfiles[state.cardIndex], state.cardIndex)}</div>
+            <div class="card-actions">
+              <button class="round-action pass" type="button" data-action="pass" aria-label="넘기기">×</button>
+              <button class="round-action like" type="button" data-action="like" aria-label="좋아요">♥</button>
+            </div>
+            <p class="action-hint">왼쪽으로 넘기기 · 오른쪽으로 호감 보내기</p>
+          ` : `
+            <div class="empty-state"><div><div class="seal" aria-hidden="true">✦</div><h2>오늘의 프로필을 모두 만났어요</h2><p>새로운 인연이 준비되면 이곳에서 가장 먼저 소개해드릴게요.</p></div></div>
+          `}
+          ${renderTabBar("swipe")}
+        </section>`;
+      if (hasCard) attachSwipeGestures();
+      attachAppActions();
+    }
+
+    function renderNotification() {
+      if (!state.notice) return "";
+      const profile = state.notice;
+      return `<aside class="notification" role="status">
+        <span class="notification-icon" aria-hidden="true">✦</span>
+        <span class="notification-text"><strong>${escapeHtml(profile.name)}님</strong>과 매칭되었습니다!<br>메시지를 확인해보세요.</span>
+        <button class="notice-close" type="button" data-action="dismiss-notice" aria-label="알림 닫기">×</button>
+      </aside>`;
+    }
+
+    function renderMainNav(active) {
+      return `<nav class="main-nav" aria-label="메인 메뉴">
+        <button type="button" data-main-view="match" aria-current="${active === "match" ? "page" : "false"}">Match♥</button>
+        <button type="button" data-main-view="lounge" aria-current="${active === "lounge" ? "page" : "false"}">VIP Lounge</button>
+      </nav>`;
+    }
+
+    function renderLounge() {
+      app.innerHTML = `
+        <section class="screen app-screen lounge-screen">
+          ${renderNotification()}
+          ${renderMainNav("lounge")}
+          <header class="lounge-heading">
+            <span class="eyebrow">PRIVATE COMMUNITY</span>
+            <h2>VIP Lounge</h2>
+            <p>이름 대신 취향으로 만나는 프라이빗 라운지</p>
+          </header>
+          ${state.loungeCommentsError && !state.loungeCommentsLoaded ? `
+            <button class="comments-retry" type="button" data-retry-comments aria-label="댓글 불러오기 다시 시도">댓글 다시 불러오기</button>
+          ` : ""}
+          ${state.loungeCommentsError && state.loungeCommentsLoaded ? `
+            <p class="comments-connection-status" role="alert">${escapeHtml(state.loungeCommentsError)}</p>
+          ` : ""}
+          <div class="community-feed">
+            ${state.loungePosts.map((post, index) => `
+              <article class="post-card">
+                <div class="post-meta"><span class="post-author">@${escapeHtml(post.author)}</span><time>${escapeHtml(post.time)}</time></div>
+                <h3>${escapeHtml(post.title)}</h3>
+                <p class="post-body">${escapeHtml(post.body)}</p>
+                <div class="post-actions">
+                  <button class="like-button" type="button" data-like-post="${index}" aria-pressed="${post.isLiked}" aria-label="${escapeHtml(post.title)} ${post.isLiked ? "공감 취소" : "공감"}">
+                    <span aria-hidden="true">${post.isLiked ? "♥" : "♡"}</span><span>${post.isLiked ? "공감 완료" : "공감"}</span><span>${post.likes}</span>
+                  </button>
+                  <button class="comments-toggle" type="button" data-toggle-comments="${index}" aria-expanded="${post.isCommentsOpen}" aria-controls="comments-${index}">
+                    💬 댓글 ${post.isCommentsOpen ? "접기" : "보기"} (${post.comments.length})
+                  </button>
+                </div>
+                <div class="comment-panel${post.isCommentsOpen ? " is-open" : ""}" id="comments-${index}" aria-hidden="${!post.isCommentsOpen}"${post.isCommentsOpen ? "" : " inert"}>
+                  <div class="comment-panel-inner">
+                    <section class="post-comments" aria-label="${escapeHtml(post.title)} 댓글">
+                      <p class="comments-label">COMMENTS · ${post.comments.length}</p>
+                      <div class="comment-list">
+                        ${post.comments.map(comment => `
+                          <div class="comment">
+                            <span class="comment-author">@${escapeHtml(comment.author)}</span>
+                            <span class="comment-text">${escapeHtml(comment.text)}</span>
+                          </div>
+                        `).join("")}
+                      </div>
+                      ${post.isCommentLocked ? `
+                        <p class="comment-locked" role="note">이 게시글은 댓글 작성이 제한되었습니다.</p>
+                        <form class="comment-form" data-comment-post="${index}" aria-label="댓글 작성 잠김">
+                          <input name="nickname" type="text" maxlength="24" placeholder="댓글 잠금" aria-label="댓글 닉네임" disabled>
+                          <input name="text" type="text" maxlength="280" placeholder="댓글 작성이 제한되었습니다" aria-label="댓글 내용" disabled>
+                          <button type="submit" disabled>등록</button>
+                        </form>
+                      ` : `
+                        <form class="comment-form" data-comment-post="${index}">
+                          <input name="nickname" type="text" maxlength="24" placeholder="닉네임" aria-label="댓글 닉네임" required>
+                          <input name="text" type="text" maxlength="280" placeholder="댓글을 남겨보세요" aria-label="댓글 내용" required>
+                          <button type="submit">등록</button>
+                        </form>
+                      `}
+                    </section>
+                  </div>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>`;
+    }
+
+    function renderTabBar(active) {
+      return `<nav class="tab-bar" aria-label="하단 메뉴">
+        <button class="tab" type="button" data-action="tab-swipe" aria-current="${active === "swipe" ? "page" : "false"}"><span class="tab-icon" aria-hidden="true">⌕</span>탐색</button>
+        <button class="tab" type="button" data-action="tab-messages" aria-current="${active === "messages" ? "page" : "false"}"><span class="tab-icon" aria-hidden="true">♡</span>메시지${state.matches.length ? ` · ${state.matches.length}` : ""}</button>
+      </nav>`;
+    }
+
+    function renderMessages() {
+      app.innerHTML = `
+        <section class="screen app-screen message-screen">
+          ${renderNotification()}
+          ${renderMainNav("match")}
+          <div class="message-heading"><h2>메시지</h2><p>마음이 통하는 인연과 대화를 시작해 보세요.</p></div>
+          ${state.matches.length ? `
+            <div class="match-list">
+              ${state.matches.map((match, index) => `
+                <button class="match-row" type="button" data-open-match="${index}">
+                  <span class="match-avatar">${match.image ? `<img src="${match.image}" alt="">` : initials(match.name)}</span>
+                  <span class="match-copy"><strong>${escapeHtml(match.name)}, ${match.age}</strong><span><span class="new-dot"></span>새로운 매칭 · 메시지를 확인해 보세요</span></span>
+                  <span class="match-meta">방금</span>
+                </button>`).join("")}
+            </div>
+          ` : `
+            <div class="empty-state"><div><div class="seal" aria-hidden="true">♡</div><h2>아직 매칭된 인연이 없어요</h2><p>탐색에서 마음에 드는 프로필에 호감을 보내면 매칭 소식과 메시지를 이곳에서 확인할 수 있어요.</p></div></div>
+          `}
+          ${renderTabBar("messages")}
+        </section>`;
+      attachAppActions();
+      document.querySelectorAll("[data-open-match]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.activeMatch = state.matches[Number(button.dataset.openMatch)];
+          state.screen = "chat";
+          render();
+        });
+      });
+    }
+
+    function renderChat() {
+      const match = state.activeMatch;
+      if (!match) {
+        state.screen = "messages";
+        renderMessages();
+        return;
+      }
+      app.innerHTML = `
+        <section class="screen app-screen chat-screen">
+          ${renderMainNav("match")}
+          <header class="chat-header">
+            <button class="back-button" type="button" data-action="back-messages" aria-label="메시지 목록으로">‹</button>
+            <div class="chat-person"><span class="match-avatar">${match.image ? `<img src="${match.image}" alt="">` : initials(match.name)}</span><span><strong>${escapeHtml(match.name)}</strong><span>✦ Verified member</span></span></div>
+          </header>
+          <div class="chat-body" id="chat-body">
+            <span class="chat-date">TODAY · JUST MATCHED</span>
+            <div class="bubble-row"><span class="match-avatar">${match.image ? `<img src="${match.image}" alt="">` : initials(match.name)}</span><div class="bubble">${escapeHtml(match.greeting)}</div></div>
+          </div>
+          <form class="chat-composer" id="chat-form">
+            <input name="message" type="text" maxlength="500" placeholder="메시지를 입력하세요" aria-label="메시지 입력" autocomplete="off">
+            <button class="send-button" type="submit" aria-label="메시지 보내기">↑</button>
+          </form>
+        </section>`;
+      document.querySelector('[data-action="back-messages"]').addEventListener("click", () => {
+        state.screen = "messages";
+        render();
+      });
+      document.querySelector("#chat-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const input = event.currentTarget.elements.message;
+        const text = input.value.trim();
+        if (!text) return;
+        const bubble = document.createElement("div");
+        bubble.className = "bubble sent-bubble";
+        bubble.textContent = text;
+        document.querySelector("#chat-body").append(bubble);
+        input.value = "";
+      });
+    }
+
+    function attachAppActions() {
+      document.querySelectorAll('[data-action="like"]').forEach(button => button.addEventListener("click", () => decide(true)));
+      document.querySelectorAll('[data-action="pass"]').forEach(button => button.addEventListener("click", () => decide(false)));
+      document.querySelectorAll('[data-action="tab-swipe"]').forEach(button => button.addEventListener("click", () => {
+        state.screen = "swipe";
+        render();
+      }));
+      document.querySelectorAll('[data-action="tab-messages"]').forEach(button => button.addEventListener("click", () => {
+        state.screen = "messages";
+        render();
+      }));
+      document.querySelectorAll('[data-action="dismiss-notice"]').forEach(button => button.addEventListener("click", () => {
+        state.notice = null;
+        render();
+      }));
+    }
+
+    function decide(liked) {
+      if (state.screen !== "swipe" || state.cardIndex >= maleProfiles.length) return;
+      const profile = maleProfiles[state.cardIndex];
+      if (liked) {
+        window.setTimeout(() => {
+          const match = { ...profile };
+          state.matches.unshift(match);
+          state.notice = match;
+          if (state.screen !== "chat") render();
+          window.setTimeout(() => {
+            if (state.notice === match) {
+              state.notice = null;
+              if (state.screen !== "chat") render();
+            }
+          }, 5200);
+        }, 5000);
+      }
+      state.cardIndex += 1;
+      render();
+    }
+
+    function attachSwipeGestures() {
+      const card = document.querySelector(".profile-card");
+      if (!card) return;
+      let startX = 0;
+      let startY = 0;
+      let currentX = 0;
+      let dragging = false;
+      card.addEventListener("pointerdown", event => {
+        if (event.target.closest("button")) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        currentX = 0;
+        dragging = true;
+        card.setPointerCapture(event.pointerId);
+      });
+      card.addEventListener("pointermove", event => {
+        if (!dragging) return;
+        currentX = event.clientX - startX;
+        const currentY = event.clientY - startY;
+        if (Math.abs(currentX) > Math.abs(currentY)) {
+          card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX / 18}deg)`;
+          card.querySelector(".stamp-like").style.opacity = Math.max(0, Math.min(1, currentX / 90));
+          card.querySelector(".stamp-pass").style.opacity = Math.max(0, Math.min(1, -currentX / 90));
+        }
+      });
+      const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        if (Math.abs(currentX) > 90) {
+          card.style.transition = "transform .22s ease, opacity .22s ease";
+          card.style.opacity = "0";
+          card.style.transform = `translate(${currentX > 0 ? 520 : -520}px, 20px) rotate(${currentX > 0 ? 24 : -24}deg)`;
+          window.setTimeout(() => decide(currentX > 0), 170);
+        } else {
+          card.style.transform = "";
+          card.querySelector(".stamp-like").style.opacity = "0";
+          card.querySelector(".stamp-pass").style.opacity = "0";
+        }
+      };
+      card.addEventListener("pointerup", endDrag);
+      card.addEventListener("pointercancel", endDrag);
+    }
+
+    function render() {
+      if (state.screen === "landing") renderLanding();
+      else if (state.screen === "profile") renderProfile();
+      else if (state.screen === "loading") renderLoading();
+      else if (state.screen === "swipe") renderSwipe();
+      else if (state.screen === "messages") renderMessages();
+      else if (state.screen === "chat") renderChat();
+      else if (state.screen === "lounge") renderLounge();
+    }
+
+    app.addEventListener("click", event => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      const mainViewButton = target.closest("[data-main-view]");
+      if (mainViewButton) {
+        if (mainViewButton.dataset.mainView === "lounge") {
+          if (state.screen !== "lounge") state.matchScreenBeforeLounge = state.screen;
+          state.screen = "lounge";
+        } else if (mainViewButton.dataset.mainView === "match") {
+          state.screen = state.screen === "lounge" ? state.matchScreenBeforeLounge : "swipe";
+        }
+        render();
+        if (state.screen === "lounge") void loadLoungeComments();
+        return;
+      }
+      const retryCommentsButton = target.closest("[data-retry-comments]");
+      if (retryCommentsButton) {
+        void loadLoungeComments();
+        return;
+      }
+      const likeButton = target.closest("[data-like-post]");
+      if (likeButton) {
+        const post = state.loungePosts[Number(likeButton.dataset.likePost)];
+        if (!post) return;
+        const scrollTop = document.querySelector(".lounge-screen")?.scrollTop ?? 0;
+        post.isLiked = !post.isLiked;
+        post.likes = Math.max(0, post.likes + (post.isLiked ? 1 : -1));
+        renderLounge();
+        document.querySelector(".lounge-screen").scrollTop = scrollTop;
+        return;
+      }
+      const commentsToggle = target.closest("[data-toggle-comments]");
+      if (commentsToggle) {
+        const post = state.loungePosts[Number(commentsToggle.dataset.toggleComments)];
+        if (!post) return;
+        post.isCommentsOpen = !post.isCommentsOpen;
+        commentsToggle.setAttribute("aria-expanded", String(post.isCommentsOpen));
+        commentsToggle.textContent = `💬 댓글 ${post.isCommentsOpen ? "접기" : "보기"} (${post.comments.length})`;
+        const panel = document.getElementById(commentsToggle.getAttribute("aria-controls"));
+        if (panel) {
+          panel.classList.toggle("is-open", post.isCommentsOpen);
+          panel.setAttribute("aria-hidden", String(!post.isCommentsOpen));
+          panel.toggleAttribute("inert", !post.isCommentsOpen);
+        }
+        return;
+      }
+      const action = target.closest('[data-action="begin"]');
+      if (action) {
+        state.screen = "profile";
+        render();
+      }
+    });
+
+    app.addEventListener("submit", event => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!form.matches("[data-comment-post]")) return;
+      event.preventDefault();
+      void submitLoungeComment(form);
+    });
+
+    function renderLoungePreservingScroll() {
+      if (state.screen !== "lounge") return;
+      const scrollTop = document.querySelector(".lounge-screen")?.scrollTop ?? 0;
+      renderLounge();
+      const loungeScreen = document.querySelector(".lounge-screen");
+      if (loungeScreen) loungeScreen.scrollTop = scrollTop;
+    }
+
+    render();
+  </script>
+</body>
+</html>
